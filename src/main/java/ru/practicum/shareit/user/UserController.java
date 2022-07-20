@@ -26,13 +26,13 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto create(@RequestBody User user) {
+    public UserDto create(@RequestBody UserDto user) {
         log.debug("Получен запрос на создание пользователя POST /users.");
         return userService.create(user);
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable long id, @RequestBody User user) {
+    public UserDto update(@PathVariable long id, @RequestBody UserDto user) {
         log.debug("Получен запрос на изменение пользователя PATCH /users.");
         return userService.update(user, id);
     }
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAll() {
+    public List<UserDto> findAll() {
         log.debug("Получен запрос GET /users.");
         return userService.getAll();
     }

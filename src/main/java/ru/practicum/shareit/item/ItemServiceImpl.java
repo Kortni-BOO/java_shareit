@@ -29,17 +29,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto create(Item item, long id) {
-        return itemMapper.toItemDto(itemStorage.create(item, userMapper.toUser(userService.getById(id))));
+    public ItemDto create(ItemDto itemDto, long id) {
+        Item item = itemStorage.create(itemMapper.toItem(itemDto), userMapper.toUser(userService.getById(id)));
+        return itemMapper.toItemDto(item);
     }
 
     @Override
-    public Item update(Item item, long userId, long itemId) {
+    public ItemDto update(ItemDto itemDto, long userId, long itemId) {
         itemStorage.checkItemId(itemId);
         if (itemStorage.checkOwner(userId, itemId)) {
             throw new UserNotFoundException("Пользователь не имеет доступа к этой вещи");
         }
-        return itemStorage.update(item, userId, itemId);
+        Item item = itemStorage.update(itemMapper.toItem(itemDto), userId, itemId);
+        return itemMapper.toItemDto(item);
     }
 
     @Override

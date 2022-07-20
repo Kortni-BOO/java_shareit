@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,13 +23,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto create(User user) {
-        return userMapper.toUserDto(userStorage.create(user));
+    public UserDto create(UserDto userDto) {
+        User user = userStorage.create(userMapper.toUser(userDto));
+        return userMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto update(User user, long id) {
-        return userMapper.toUserDto(userStorage.update(user, id));
+    public UserDto update(UserDto userDto, long id) {
+        User user = userStorage.update(userMapper.toUser(userDto), id);
+        return userMapper.toUserDto(user);
     }
 
     @Override
@@ -45,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userStorage.getAll();
+    public List<UserDto> getAll() {
+        return userStorage.getAll().stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
 }

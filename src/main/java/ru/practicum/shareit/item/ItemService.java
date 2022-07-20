@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface ItemService {
     //добавление вещи
-    public ItemDto create(Item item, long id);
+    public ItemDto create(ItemDto item, long id);
 
     //обновление вещи
-    public Item update(Item item, long id, long itemId);
+    public ItemDto update(ItemDto item, long id, long itemId);
 
     //удаление вещи по id
     public void delete(Item item);
