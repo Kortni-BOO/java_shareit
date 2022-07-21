@@ -11,9 +11,6 @@ import org.slf4j.Logger;
 
 import java.util.List;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {

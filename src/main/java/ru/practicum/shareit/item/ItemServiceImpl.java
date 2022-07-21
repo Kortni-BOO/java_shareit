@@ -65,10 +65,3 @@ public class ItemServiceImpl implements ItemService {
         return itemStorage.getItemsByQuery(text).stream().map(itemMapper::toItemDto).collect(Collectors.toList());
     }
 }
-/**
-        if(item.getOwner().getId() != id) {
-
-        }
-        //userMapper.toUser(userService.getById(id))
-
-* */

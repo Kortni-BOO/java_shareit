@@ -10,9 +10,6 @@ import ru.practicum.shareit.user.UserController;
 
 import java.util.List;
 
-/**
- * // TODO .
- */
 @RestController
 @RequestMapping("/items")
 public class ItemController {
@@ -27,6 +24,7 @@ public class ItemController {
     @PostMapping
     public ItemDto create(@RequestHeader("X-Sharer-User-Id") long id,
                           @RequestBody ItemDto item) {
+        log.debug("Получен запрос на создание вещи POST /items.");
         return itemService.create(item, id);
 
     }
@@ -35,12 +33,14 @@ public class ItemController {
     public ItemDto update(@RequestHeader("X-Sharer-User-Id") long userId,
                           @PathVariable int itemId,
                           @RequestBody ItemDto item) {
+        log.debug("Получен запрос на обновление вещи PATCH /items/{}.", itemId);
         return itemService.update(item, userId, itemId);
 
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getById(@PathVariable("itemId") long id) {
+        log.debug("Получен запрос GET /items/{itemsId}.");
         return itemService.getById(id);
     }
 

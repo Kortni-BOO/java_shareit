@@ -34,7 +34,6 @@ public class ItemStorage {
     }
 
     public Item update(Item item, long userId, long itemId) {
-        checkItemId(itemId);
         Item itemUp = items.get(itemId);
         if (item.getName() != null) {
             itemUp.setName(item.getName());

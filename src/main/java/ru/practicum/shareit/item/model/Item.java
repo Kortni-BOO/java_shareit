@@ -6,10 +6,6 @@ import ru.practicum.shareit.requests.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotNull;
-
-/**
- * // TODO .
- */
 @Data
 @Builder
 public class Item {
