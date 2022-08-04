@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemOwnerDto;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.UserController;
 
 import java.util.List;
@@ -45,12 +47,19 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> getAllByUserId(@RequestHeader("X-Sharer-User-Id") long id) {
+    public List<ItemOwnerDto> getAllByUserId(@RequestHeader("X-Sharer-User-Id") long id) {
         return itemService.getAllByUserId(id);
     }
 
     @GetMapping("/search")
     public List<ItemDto> getItemsByQuery(@RequestParam String text) {
         return itemService.searchItemByQuery(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") long id,
+                                    @PathVariable long itemId,
+                                    @RequestBody CommentDto commentDto) {
+        return itemService.createComment(id, itemId, commentDto);
     }
 }
