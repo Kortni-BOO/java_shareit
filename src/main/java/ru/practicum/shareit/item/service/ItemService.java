@@ -18,13 +18,13 @@ public interface ItemService {
     public void delete(Item item);
 
     //Просмотр владельцем списка всех его вещей с указанием названия и описания для каждой
-    public List<ItemOwnerDto> getAllByUserId(long id);
+    public List<ItemOwnerDto> getAllByUserId(long id, int from, int size);
 
     //Просмотр информации о конкретной вещи по её идентификатору
     public ItemDto getById(long id);
 
     //Поиск вещи потенциальным арендатором по тексту в название или описание
-    List<ItemDto> searchItemByQuery(String text);
+    List<ItemDto> searchItemByQuery(String text, int from, int size);
 
     CommentDto createComment(long id, long itemId, CommentDto commentDto);
 }

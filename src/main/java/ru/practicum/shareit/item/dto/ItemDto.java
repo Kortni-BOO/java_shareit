@@ -19,4 +19,5 @@ public class ItemDto {
     @NotNull
     Boolean available; // — статус о том, доступна или нет вещь для аренды;
     User owner;
+    Long requesterId;
 }

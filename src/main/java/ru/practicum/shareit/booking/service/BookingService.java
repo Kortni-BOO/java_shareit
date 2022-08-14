@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BookingService {
     /* Добавление (создание) нового запроса на бронирование */
-    BookingDto create(PostBookingDto bookingDto, long userId);
+    PostBookingDto create(PostBookingDto bookingDto, long userId);
 
     /* Подтверждение или отклонение запроса на бронирование */
     BookingDto setApproved(long bookingId, boolean approved);
@@ -17,8 +17,8 @@ public interface BookingService {
     BookingDto getById(long bookingId);
 
     /* Получение списка всех бронирований текущего пользователя */
-    List<BookingDto> getAllBookingByUserId(long userId, State state);
+    List<BookingDto> getAllBookingByUserId(long userId, State state, int from, int size);
 
     /* Получение списка бронирований для всех вещей текущего пользователя */
-    List<BookingDto> getAllItemByUserId(long userId, State state);
+    List<BookingDto> getAllItemByUserId(long userId, State state, int from, int size);
 }
