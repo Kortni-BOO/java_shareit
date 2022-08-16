@@ -1,6 +1,9 @@
 package ru.practicum.shareit.booking.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.PostBookingDto;
@@ -49,14 +52,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto create(PostBookingDto bookingDto, long userId) {
+    public PostBookingDto create(PostBookingDto bookingDto, long userId) {
         ItemDto item = itemService.getById(bookingDto.getItemId());
         UserDto user = userService.getById(userId);
         Booking booking = bookingMapper.toBooking(bookingDto);
         booking.setBooker(userMapper.toUser(user));
         booking.setStatus(Status.WAITING);
         booking.setItem(itemMapper.toItem(item));
-        return bookingMapper.toBookingDto(repository.save(booking));
+        return bookingMapper.toBookingPostDto(repository.save(booking));
     }
 
     @Override
@@ -68,52 +71,56 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
-    public List<BookingDto> getAllBookingByUserId(long userId, State state) {
+    public List<BookingDto> getAllBookingByUserId(long userId, State state, int from, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "start");
+        Pageable page = PageRequest.of(from, size, sort);
         switch (state) {
             case ALL:
-                 return bookingMapper.toBookingDtoList(repository.findAllByBookerIdOrderByStartDesc(userId));
+                 return bookingMapper.toBookingDtoList(repository.findAllByBookerIdOrderByStartDesc(userId, page));
             case CURRENT:
                 return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
                         userId,
                         LocalDateTime.now(),
-                        LocalDateTime.now()));
+                        LocalDateTime.now(),
+                        page));
             case PAST:
-                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now()));
+                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(userId,
+                        LocalDateTime.now(),
+                        page));
             case FUTURE:
-                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now()));
+                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now(), page));
             case WAITING:
-                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING));
+                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.WAITING, page));
             case REJECTED:
-                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED));
+                return bookingMapper.toBookingDtoList(repository.findAllByBookerIdAndStatusOrderByStartDesc(userId, Status.REJECTED, page));
             default:
                 return Collections.emptyList();
         }
     }
 
     @Override
-    public List<BookingDto> getAllItemByUserId(long userId, State state) {
+    public List<BookingDto> getAllItemByUserId(long userId, State state, int from, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "start");
+        Pageable page = PageRequest.of(from, size, sort);
         switch (state) {
             case ALL:
-                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdOrderByStartDesc(userId));
+                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdOrderByStartDesc(userId, page));
             case CURRENT:
                 return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
                         userId,
                         LocalDateTime.now(),
-                        LocalDateTime.now()));
+                        LocalDateTime.now(),
+                        page));
             case PAST:
-                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now()));
+                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now(), page));
             case FUTURE:
-                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now()));
+                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now(), page));
             case WAITING:
-                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING));
+                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.WAITING, page));
             case REJECTED:
-                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.REJECTED));
+                return bookingMapper.toBookingDtoList(repository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, Status.REJECTED, page));
             default:
                 return Collections.emptyList();
         }
     }
-
-//    public Booking getBookingId(long userId) {
-//        return repository.findFirstByBooker_Id(userId);
-//    }
 }

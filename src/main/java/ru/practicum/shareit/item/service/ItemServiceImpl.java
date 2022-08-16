@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -48,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto getById(long id) {
         Item item = itemStorage.findById(id).orElseThrow(() -> {
-                    throw  new ObjectNotFoundException(String.format("Сущность с id %d не найдена", id));
+                    throw  new ObjectNotFoundException(String.format("Вещь с id %d не найдена", id));
         });
         return itemMapper.toItemDto(item);
     }
@@ -75,9 +78,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemOwnerDto> getAllByUserId(long id) {
-        //bookingService.getBookingId(id);
-        return itemStorage.findAllByOwnerId(id)
+    public List<ItemOwnerDto> getAllByUserId(long id, int from, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable page = PageRequest.of(from, size, sort);
+        return itemStorage.findAllByOwnerId(id, page)
                 .stream()
                 .map(this::setBooking)
                 .collect(Collectors.toList());
@@ -91,8 +95,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItemByQuery(String text) {
-        return itemStorage.search(text).stream().map(itemMapper::toItemDto).collect(Collectors.toList());
+    public List<ItemDto> searchItemByQuery(String text, int from, int size) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Pageable page = PageRequest.of(from, size, sort);
+        return itemStorage.search(text, page).stream().map(itemMapper::toItemDto).collect(Collectors.toList());
     }
 
     public void checkOwner(Item item, long userId) {

@@ -5,6 +5,9 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemOwnerDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.requests.model.ItemRequest;
+
+import java.util.Optional;
 
 @Component
 public class ItemMapper {
@@ -14,7 +17,8 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getOwner()
+                item.getOwner(),
+                Optional.ofNullable(item.getRequest()).map(ItemRequest::getId).orElse(null)
         );
     }
 

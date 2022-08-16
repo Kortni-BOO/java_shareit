@@ -16,6 +16,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
+    private static final String USER_HEADER = "X-Sharer-User-Id";
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -24,7 +25,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto create(@RequestHeader("X-Sharer-User-Id") long id,
+    public ItemDto create(@RequestHeader(USER_HEADER) long id,
                           @RequestBody ItemDto item) {
         log.debug("Получен запрос на создание вещи POST /items.");
         return itemService.create(item, id);
@@ -32,7 +33,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ItemDto update(@RequestHeader(USER_HEADER) long userId,
                           @PathVariable int itemId,
                           @RequestBody ItemDto item) {
         log.debug("Получен запрос на обновление вещи PATCH /items/{}.", itemId);
@@ -47,17 +48,21 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemOwnerDto> getAllByUserId(@RequestHeader("X-Sharer-User-Id") long id) {
-        return itemService.getAllByUserId(id);
+    public List<ItemOwnerDto> getAllByUserId(@RequestHeader(USER_HEADER) long id,
+                                             @RequestParam(defaultValue = "0") int from,
+                                             @RequestParam(defaultValue = "20") int size) {
+        return itemService.getAllByUserId(id, from, size);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getItemsByQuery(@RequestParam String text) {
-        return itemService.searchItemByQuery(text);
+    public List<ItemDto> getItemsByQuery(@RequestParam String text,
+                                         @RequestParam(defaultValue = "0") int from,
+                                         @RequestParam(defaultValue = "20") int size) {
+        return itemService.searchItemByQuery(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto createComment(@RequestHeader("X-Sharer-User-Id") long id,
+    public CommentDto createComment(@RequestHeader(USER_HEADER) long id,
                                     @PathVariable long itemId,
                                     @RequestBody CommentDto commentDto) {
         return itemService.createComment(id, itemId, commentDto);

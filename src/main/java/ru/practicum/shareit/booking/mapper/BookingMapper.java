@@ -41,6 +41,15 @@ public class BookingMapper {
         );
     }
 
+    public PostBookingDto toBookingPostDto(Booking booking) {
+        return new PostBookingDto(
+                booking.getId(),
+                booking.getStart(),
+                booking.getEnd(),
+                booking.getItem().getId()
+        );
+    }
+
     public List<BookingDto> toBookingDtoList(List<Booking> bookings) {
         return bookings.stream().map(this::toBookingDto).collect(Collectors.toList());
     }
