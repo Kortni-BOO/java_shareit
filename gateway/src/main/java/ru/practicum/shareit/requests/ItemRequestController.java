@@ -22,11 +22,13 @@ public class ItemRequestController {
     @PostMapping
     public ResponseEntity<Object> createRequest(@RequestHeader(USER_HEADER) long userId,
                                                 @RequestBody @Valid ItemRequestDto requestDto) {
+        log.info("Post requests , userId={}", userId);
         return itemRequestClient.createRequest(userId, requestDto);
     }
 
     @GetMapping
     public ResponseEntity<Object> getRequestByUserId(@RequestHeader(USER_HEADER) long userId) {
+        log.info("Get requests , userId={}", userId);
         return itemRequestClient.getRequestByUserId(userId);
     }
 
@@ -34,12 +36,14 @@ public class ItemRequestController {
     public ResponseEntity<Object> getAllRequest(@RequestHeader(USER_HEADER) long userId,
                                                 @RequestParam(name = "from", defaultValue = "0") int from,
                                                 @RequestParam(name = "size", defaultValue = "20") int size) {
+        log.info("Get all requests , userId={}", userId);
         return itemRequestClient.getAllRequest(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
     public ResponseEntity<Object> getRequestById(@RequestHeader(USER_HEADER) long userId,
                                                  @PathVariable long requestId) {
+        log.info("Get requests/{} , userId={}", requestId, userId);
         return itemRequestClient.getRequestById(userId, requestId);
     }
 }
